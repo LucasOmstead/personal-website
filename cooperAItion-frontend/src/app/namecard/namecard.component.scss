@@ -1,0 +1,45 @@
+/* Enable 3D effect */
+.flipper-container {
+    perspective: 1000px;
+}
+
+/* The flipping wrapper */
+.flipper {
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+/* Rotate on hover */
+.flipper-container:hover .flipper {
+    transform: rotateY(180deg);
+}
+
+/* Ensure back face is hidden when not flipped */
+.front, .back {
+    backface-visibility: hidden;
+}
+
+/* Initial rotation for back side */
+.back {
+    transform: rotateY(180deg);
+}
+
+
+.layered {
+    display: grid;
+    justify-items: start;
+    align-items: start;
+  }
+  
+  .layered > * {
+    grid-column-start: 1;
+    grid-row-start: 1;
+  }
+
+
+
+
+
+
+
+  

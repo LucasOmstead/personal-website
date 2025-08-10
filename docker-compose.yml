@@ -1,0 +1,87 @@
+services:
+  # Get certificates first
+  certbot:
+    image: certbot/certbot
+    profiles: ["cert"]
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --email lucasomstead@gmail.com -d lucasomstead.com -d www.lucasomstead.com --agree-tos --non-interactive
+
+  # Main homepage/portfolio site
+  homepage:
+    image: nginx:alpine
+    volumes:
+      - ./homepage:/usr/share/nginx/html  # Your main website files
+    expose:
+      - "80"
+    restart: unless-stopped
+
+  # Shape Shifters project
+  shapeshifters:
+    image: nginx:alpine
+    volumes:
+      - ./shapeshifters:/usr/share/nginx/html  # Shape Shifters project files
+    expose:
+      - "80"
+    restart: unless-stopped
+
+  # HTTP-only nginx for initial setup
+  nginx-init:
+    image: nginx:alpine
+    profiles: ["init"]
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx-init.conf:/etc/nginx/nginx.conf  # Simple HTTP-only config
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - homepage
+      - shapeshifters
+      - frontend
+      - backend
+
+  # Full nginx with HTTPS (only for production)
+  nginx:
+    image: nginx:alpine
+    profiles: ["prod"]  # Add profile so it doesn't start automatically
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - homepage
+      - shapeshifters
+      - frontend
+      - backend
+    restart: unless-stopped
+
+  backend:
+    build: 
+      context: ./cooperAItion-backend
+      dockerfile: Dockerfile
+    # Remove direct port exposure
+    expose:
+      - "5000"
+    # Remove volume mounting for production - code is baked into image
+    # volumes:
+    #   - ./cooperAItion-backend:/app
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production  # Changed from FLASK_DEBUG
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  frontend:
+    build: 
+      context: ./cooperAItion-frontend
+      dockerfile: Dockerfile
+    # Remove direct port exposure
+    expose:
+      - "80"
+    depends_on:
+      - backend
+    restart: unless-stopped

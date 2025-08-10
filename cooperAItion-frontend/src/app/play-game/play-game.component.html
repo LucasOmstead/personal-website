@@ -1,0 +1,21 @@
+<div class="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
+    <!--Lists past rounds-->
+    <div #pastMatchContainer class="flex flex-col items-center justify-left w-250 h-40">
+        <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
+            <h1 class="w-80 text-2xl">Your moves: </h1>
+            <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
+                <div *ngFor="let move of curMatch[0]" class="rounded-full w-15 h-15" [ngClass]="move == 1 ? 'bg-red-300' : 'bg-blue-300'"></div>
+            </div>
+        </div>
+        <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
+            <h1 class="w-80 text-2xl">Opponent's moves: </h1>
+            <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
+                <div *ngFor="let move of curMatch[1]" class="rounded-full w-15 h-15" [ngClass]="move == 1 ? 'bg-red-300' : 'bg-blue-300'"></div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-20 w-[50%] h-50 flex justify-between">
+        <button mat-flat-button color="primary" class="text-l" (click)="handleAction(0)" style="width: 200px; margin-left: 60px;"> Cooperate </button>
+        <button mat-flat-button color="primary" class="text-l" (click)="handleAction(1)" style="width: 200px; margin-left: 60px;"> Defect </button>
+    </div>
+</div>

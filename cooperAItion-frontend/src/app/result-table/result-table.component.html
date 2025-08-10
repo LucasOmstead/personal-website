@@ -1,0 +1,42 @@
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="bg-blue-600 p-4">
+            <h1 class="text-2xl font-bold text-white text-center">Tournament</h1>
+        </div>
+        
+        <!-- Leaderboard -->
+        <div class="divide-y divide-gray-200">
+            <div *ngFor="let player of rankedPlayers; let rank = index" 
+                 class="hover:bg-gray-50 transition-all duration-200">
+                
+                <!-- Player Row -->
+                <div (click)="togglePlayerDetails(rank)"
+                     class="p-4 flex items-center justify-between cursor-pointer">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-xl font-bold text-gray-500">{{rank + 1}}</span>
+                        <span class="text-lg font-semibold">{{players[player.index].name}}</span>
+                    </div>
+                    <span class="text-lg font-bold text-blue-600">{{player.score}} points</span>
+                </div>
+
+                <!-- Expandable Match History -->
+                <div *ngIf="selectedPlayer === rank" 
+                     class="bg-gray-50 p-4 border-t border-gray-200">
+                    <h3 class="font-semibold text-gray-700 mb-3">Match History</h3>
+                    <div class="space-y-2">
+                        <div *ngFor="let match of matchResults[player.index]; let j = index" 
+                             class="bg-white rounded p-3 shadow-sm"
+                             [class.hidden]="j === player.index">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-medium">vs {{players[j].name}}</span>
+                            </div>
+                            <app-match-view [match]="matchResults[player.index][j]" 
+                                          [payoffs]="payoffs">
+                            </app-match-view>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="flipper-container w-110 h-38 bg-gray-200 p-4 rounded-lg shadow">
+    <div class="flipper layered">
+        <div id="namecard-container-front" class="front rounded flex">
+            <div class="w-30 h-30 rounded-xl overflow-hidden">
+                <img class="w-full h-full object-fill" [src]="imageURL">
+            </div>
+            <div class="ml-5 flex flex-col items-start justify-start w-70">
+                <h1 class="mb-2">{{name}}</h1>
+                <p>{{description}}</p>
+            </div>
+        </div>
+        <div id="namecard-container-back" class="back w-102 h-30 rounded">
+            <h1>{{detailedDescription}}</h1>
+        </div>
+    </div>
+</div>

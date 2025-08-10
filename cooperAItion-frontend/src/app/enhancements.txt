@@ -1,0 +1,12 @@
+1. Add a leaderboard page to view the total score each player got; clickable to show match history
+2. Make the model and yourself play the same number of rounds against all players to be fair (some randomness is necessary ofc)
+3. Randomize the order in which you play each model
+4. Make UI look better
+
+
+For 1. 
+All the state information should be stored in app.component. play-game should know how many rounds
+to play before it actually plays. All other rounds should be calculated within app.component instead of result-table.
+so that they can be displayed in a leaderboard.
+
+

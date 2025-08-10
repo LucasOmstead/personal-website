@@ -1,0 +1,135 @@
+
+
+<main class="main">
+  <div *ngIf="curPage == 0 || curPage == 1" class="content min-h-[89vh]">
+    <!--Page for introducing the different players-->
+    <div class="home min-h-screen bg-gradient-to-b from-gray-50 to-white" *ngIf="curPage == 0">
+      <div class="flex flex-col items-center w-screen justify-center py-12"> 
+        <h1 class="text-6xl font-bold mb-4 text-gray-800"> Meet Your Opponents </h1>
+        <p class="text-xl text-gray-600 mb-12 max-w-2xl text-center">Each opponent has their own unique strategy. Learn their patterns and adapt your gameplay to succeed!</p>
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] w-[95%] max-w-[1600px] gap-8 justify-center px-4">
+          <div *ngFor="let p of players" class="custom-component transform transition-transform duration-300 hover:scale-105">
+            <app-namecard
+              [name]="p.name"
+              [description]="p.description"
+              [imageURL]="p.image"
+              [detailedDescription]="p.detailedDescription"
+              class="shadow-lg rounded-xl overflow-hidden"
+            ></app-namecard>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Page for choosing the loadout -->
+    <div *ngIf="curPage == 1">
+      <div class="loader flex justify-center items-center flex-row">
+        <div #formBorder class="flex flex-col flex-center items-center w-110 border-2 border-gray-200 rounded-lg mt-10 mr-20 pb-10">
+          <h1 class="text-2xl my-7">Select Agent Population</h1>  
+          <div *ngFor="let p of playerNames">
+            
+            <h1 class="text-l">{{p[0]}}: {{playerCounts[p[0]]}}</h1>
+            <mat-slider style="width: 400px; display: block;" discrete="true" min="0" max="10" step="1">
+              <input  matSliderThumb  [value]="playerCounts[p[0]]" (input)="setValue(p[0], $event)">
+            </mat-slider>
+            
+          </div>
+          <!--Payoff matrix selection table-->
+          <h1 class="text-xl mb-4"> Payoff Matrix: </h1>
+          <div class="grid grid-cols-[120px_120px_120px] grid-rows-[auto_auto_auto] border border-gray-200 rounded-lg overflow-hidden bg-white">
+            <!-- Header Row -->
+            <div class="bg-gray-50 p-2"></div>
+            <div class="bg-gray-50 p-2 text-sm text-center font-medium text-gray-700 border-l border-gray-200 whitespace-nowrap">P2 Cooperate</div>
+            <div class="bg-gray-50 p-2 text-sm text-center font-medium text-gray-700 border-l border-gray-200 whitespace-nowrap">P2 Defect</div>
+            
+            <!-- P1 Cooperate Row -->
+            <div class="bg-gray-50 p-2 text-sm font-medium text-gray-700">P1 Cooperate</div>
+            <div class="flex border-l border-t border-gray-200">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[0][0]" (ngModelChange)="setValue()">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm border-l border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[0][0]" (ngModelChange)="setValue()">
+            </div>
+            <div class="flex border-l border-t border-gray-200">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[0][1]" (ngModelChange)="setValue()">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm border-l border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[1][0]" (ngModelChange)="setValue()">
+            </div>
+            
+            <!-- P1 Defect Row -->
+            <div class="bg-gray-50 p-2 text-sm font-medium text-gray-700">P1 Defect</div>
+            <div class="flex border-l border-t border-gray-200">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[1][0]" (ngModelChange)="setValue()">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm border-l border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[0][1]" (ngModelChange)="setValue()">
+            </div>
+            <div class="flex border-l border-t border-gray-200">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[1][1]" (ngModelChange)="setValue()">
+              <input matInput type="text" pattern="\d*" inputmode="numeric" 
+                     class="w-1/2 p-2 text-center text-sm border-l border-gray-200 focus:outline-none focus:ring-1 focus:ring-blue-400 transition-all" 
+                     [(ngModel)]="payoffs[1][1]" (ngModelChange)="setValue()">
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-center items-center w-110 border-2 border-gray-200 rounded-lg mt-10">
+          <h1 class="text-l my=10 mx-10 my-10">You'll be playing 1 round against each player - don't choose too many! 
+            Each round will consist of a random number of moves (at least 3, but with no fixed upper bound) played against the same opponent. Why not play a fixed number of moves? Well, if you know it's the last move, there's no reason 
+            to cooperate. And if there's no reason to cooperate on the last move, there's no reason to cooperate on the second-last move... you get the idea. Through backwards induction, 
+            we can show that <i>any</i> fixed number of moves will result in rational players defecting the entire time!
+            <br><br>
+            When planning your strategy, remember to do 3 key things:
+            <br>
+            <br>1. Be nice. Mean strategies will often trigger counterattacks, which makes <i>everyone</i> lose.
+            <br>2. Be retaliatory. Don't let mean strategies take advantage of you!
+            <br>3. Be forgiving. Sometimes, choosing to ignore a defection can turn out better for both players!
+            <br><br>
+            Sim Jim will be training hard, trying to exploit weaknesses in his opponents & attain the highest score possible. After you finish playing, you'll have a chance to see how you did compared to Jim, 
+            and every other player! Remember to have fun but, more importantly, to maximize your score!
+          </h1>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Footer-->
+  
+
+  <!--
+  @Input() numPlayers!: number;
+  @Input() playerList!: string[];
+  @Input() payoffs!: number[][];
+  @Input() model!: string;
+  -->
+  <div class="h-[89vh]" *ngIf="curPage == 2">
+    <app-play-game [opponent]="playersList[orderMap[playersListIndex]]" [rounds]="roundsPerPlayer[orderMap[playersListIndex]]" (results)="gameFinished($event)"></app-play-game>
+  </div>
+
+  <div class="min-h-[89vh]" *ngIf="curPage == 3">
+    <app-result-table [players]="playersList" [payoffs]="payoffs" [matchResults]="matchResults" [scores]="playerScores"></app-result-table>
+  </div>
+
+  <div class="w-screen h-[9vh] mt-[2vh] flex justify-between items-center bg-gray-50">
+      <h1 *ngIf="curPage == 0" #dummy></h1>
+      <button *ngIf="curPage == 0" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px; margin-right: 60px;">Choose players--></button>
+
+
+      <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(0)" style="width: 200px; margin-left: 60px;"><--View Players</button>
+      <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(2)" style="width: 200px; margin-right: 60px;">Begin game--></button>
+
+      <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px; margin-left: 60px;"> <-- Choose players </button>
+      <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(3)" style="width: 200px; margin-right: 60px;"> View Results --> </button>
+
+      <button *ngIf="curPage == 3" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px; margin-left: 60px;"><--Choose players</button>
+      <h1 *ngIf="curPage == 3" #dummy2></h1>
+  </div>
+
+</main>

@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - ENV=production
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1  # Enable debug mode for development
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    build: 
+      context: C:\Users\lucas\code\cooperaition-frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - C:\Users\lucas\code\cooperaition-frontend:/app
+      - /app/node_modules
+    environment:
+      - ENV=production
+    depends_on:
+      - backend
