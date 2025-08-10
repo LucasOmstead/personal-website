@@ -1,3 +1,13 @@
+/* Prevent page bouncing/overscroll */
+:host {
+  overscroll-behavior: none;
+}
+
+html, body {
+  overscroll-behavior: none;
+  overflow-x: hidden;
+}
+
 ::ng-deep mat-slider input {
     width:400px;
 }

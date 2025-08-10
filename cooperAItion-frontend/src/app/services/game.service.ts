@@ -82,11 +82,11 @@ export class TwoTitForTat extends Player {
   }
 }
 
-export class NiceTitForTat extends Player {
+export class CooperativeTitForTat extends Player {
   
   constructor() {
     super();
-    this.name = "Nice Tit For Tat";
+    this.name = "Cooperative Tit For Tat";
   }
   override get_action(past_moves: PastMoves, i: number): number {
     if (i === 0 || (past_moves[1].filter(x => x === 1).length / i < 0.2)) {

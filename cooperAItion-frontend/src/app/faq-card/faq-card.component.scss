@@ -1,0 +1,107 @@
+.faq-container {
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.answer-section {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(-10px);
+}
+
+/* Hover effects */
+.faq-container:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+.faq-container:hover .answer-section {
+    opacity: 1;
+    max-height: none;
+    transform: translateY(0);
+}
+
+/* Markdown content styling */
+.markdown-content {
+    h1, h2, h3, h4, h5, h6 {
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    p {
+        margin-bottom: 1rem;
+        
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+    
+    a {
+        color: #3b82f6 !important;
+        text-decoration: none !important;
+        border-bottom: 1px dotted #3b82f6 !important;
+        transition: all 0.2s ease !important;
+        
+        &:hover {
+            color: #1d4ed8 !important;
+            border-bottom-style: solid !important;
+            text-decoration: none !important;
+        }
+        
+        &:visited {
+            color: #7c3aed !important;
+        }
+    }
+    
+    /* Additional specificity for links */
+    ::ng-deep a {
+        color: #3b82f6 !important;
+        text-decoration: none !important;
+        border-bottom: 1px dotted #3b82f6 !important;
+        
+        &:hover {
+            color: #1d4ed8 !important;
+            border-bottom-style: solid !important;
+        }
+        
+        &:visited {
+            color: #7c3aed !important;
+        }
+    }
+    
+    strong, b {
+        font-weight: 600;
+    }
+    
+    em, i {
+        font-style: italic;
+    }
+    
+    code {
+        background-color: #f1f5f9;
+        padding: 0.125rem 0.25rem;
+        border-radius: 0.25rem;
+        font-size: 0.875em;
+        font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    
+    ul, ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+        
+        li {
+            margin-bottom: 0.25rem;
+        }
+    }
+    
+    blockquote {
+        border-left: 4px solid #e5e7eb;
+        padding-left: 1rem;
+        margin: 1rem 0;
+        font-style: italic;
+        color: #6b7280;
+    }
+}

@@ -4,7 +4,7 @@ import { OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatchViewComponent } from "../match-view/match-view.component";
 
-import {PastMoves, Player, Defector, Cooperator, GrimTrigger, RandomChooser, TitForTat, TwoTitForTat, NiceTitForTat, SuspiciousTitForTat, ModelPlayer, You} from'../services/game.service';
+import {PastMoves, Player, Defector, Cooperator, GrimTrigger, RandomChooser, TitForTat, TwoTitForTat, CooperativeTitForTat, SuspiciousTitForTat, ModelPlayer, You} from'../services/game.service';
 
 
 @Component({

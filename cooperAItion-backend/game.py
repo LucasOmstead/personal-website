@@ -2,7 +2,7 @@
 import random
 import time
 from math import e, ceil
-from players import Player, Defector, Cooperator, GrimTrigger, RandomChooser, TitForTat, TwoTitForTat, NiceTitForTat, SuspiciousTitForTat, myModels
+from players import Player, Defector, Cooperator, GrimTrigger, RandomChooser, TitForTat, TwoTitForTat, CooperativeTitForTat, SuspiciousTitForTat, myModels
 #In general, past_moves[0] = your own moves, past_moves[1] = opponent's moves
 #region LRUCache
 class Node:
@@ -97,7 +97,7 @@ def successor(model, memSize):
 
 #First we'll use hill-climbing; should be easier to implement
 def train_hill_climb(numRestarts: int, numIterations: int, successor, payoffs, memSize):
-    models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()]
+    models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()]
 
     bestModels = []
     ModelPlayer = myModels[memSize]
@@ -144,7 +144,7 @@ def train_hill_climb_tabu_restart(numRestarts: int, numIterations: int, successo
     #128 + 16 + 4 + 1 = 149 total bits
     
     #this is just a training set, we can swap it out with other models
-    models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()]
+    models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()]
     # models = [Cooperator(), Cooperator(), Cooperator()]
 
     bestModels = []
@@ -197,7 +197,7 @@ def train_hill_climb_tabu(numIterations: int, successor, payoffs, memSize, tabuS
     """
     # Define evaluation models.
     models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), 
-              TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()]
+              TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()]
     ModelPlayer = myModels[memSize]
     
     # Initialize tabu list and starting solution.
@@ -407,7 +407,7 @@ payoffs = [[cooperateReward[0], betrayedReward[0]],
 payoffs2 = [[-1, -5], [0, -3]]
 payoffs = [[3, 0], [5, 1]]
 memorySize = 149
-baseLineModels = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()]
+baseLineModels = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()]
 
 
 # print("Genetic model:")
@@ -415,7 +415,7 @@ baseLineModels = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitFo
 #     for _ in range(10):
 #         annealing_model = train_hill_climb(1, i, successor, payoffs, 149)
 #         # annealing_model = train_basic_genetic_mutation(5, 20, 1, .05, 5, baseLineModels, payoffs, 149)
-#         models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()]
+#         models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()]
 #         # print(bin(annealing_model[0]), annealing_model[1])
 #         # print("Genetic model fitnesses:")
 #         print(calculateFitness(payoffs, models, myModels[149](annealing_model[0])))
@@ -434,27 +434,27 @@ baseLineModels = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitFo
 # trained_bin_model = bin(trained_bin_model)
 # print(trained_bin_model, performance)
 # print("Tabu search model fitnesses:")
-# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat(), myModels[memorySize](int(trained_bin_model[2:], 2))]
+# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat(), myModels[memorySize](int(trained_bin_model[2:], 2))]
 # print(calculateAllFitnesses(payoffs, models))
 # # print((trained_bin_model>>148)&1, (trained_bin_model>>144)&1, (trained_bin_model>>128)&1) #prints what happens with no defections - usually 0 0 0            
 
 # print("Basic Genetic Model:")
-# genetic_model = train_basic_genetic(15, 40, 0.1, [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()], payoffs=payoffs)
-# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat(), ModelPlayer(genetic_model[0])]
+# genetic_model = train_basic_genetic(15, 40, 0.1, [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()], payoffs=payoffs)
+# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat(), ModelPlayer(genetic_model[0])]
 # print(bin(genetic_model[0]), genetic_model[1])
 # print("Basic Genetic Model Fitnesses:")
 # print(calculateAllFitnesses(payoffs, models))
 
 # print("Mutation Genetic Model:")
-# genetic_model = train_basic_genetic_mutation(50, 30, 0.2, 0.1, 5, [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()], payoffs=payoffs)
-# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat(), ModelPlayer(genetic_model[0])]
+# genetic_model = train_basic_genetic_mutation(50, 30, 0.2, 0.1, 5, [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()], payoffs=payoffs)
+# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat(), ModelPlayer(genetic_model[0])]
 # print(bin(genetic_model[0]), genetic_model[1])
 # print("Mutation Genetic Model Fitnesses:")
 # print(calculateAllFitnesses(payoffs, models))
 
 # print("Local Beam Model:")
-# local_beam_model = local_beam_search(10, 5, successor=successor, models=[Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat()], payoffs=payoffs)
-# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), NiceTitForTat(), SuspiciousTitForTat(), ModelPlayer(local_beam_model[0])]
+# local_beam_model = local_beam_search(10, 5, successor=successor, models=[Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()], payoffs=payoffs)
+# models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat(), ModelPlayer(local_beam_model[0])]
 # print(bin(local_beam_model[0]), local_beam_model[1])
 # print("Local Beam Model Fitnesses:")
 # print(calculateAllFitnesses(payoffs, models))

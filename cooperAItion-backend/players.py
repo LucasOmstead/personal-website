@@ -59,10 +59,10 @@ class TwoTitForTat(Player):
             return 0
         return 1 if (past_moves[1][i-1] == 1 and past_moves[1][i-2] == 1) else 0 
 
-class NiceTitForTat(Player):
+class CooperativeTitForTat(Player):
     def __init__(self):
         super().__init__()
-        self.name = "Nice Tit For Tat"
+        self.name = "Cooperative Tit For Tat"
     
     def get_action(self, past_moves, i):
         if i == 0 or past_moves[1].count(1) / i < .2:

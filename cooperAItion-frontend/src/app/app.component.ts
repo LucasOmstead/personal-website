@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NamecardComponent } from './namecard/namecard.component';
+import { FaqCardComponent } from './faq-card/faq-card.component';
 import { FormsModule } from '@angular/forms';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatButtonModule} from '@angular/material/button';
@@ -9,7 +10,7 @@ import { ApiService } from './services/api.service';
 import { ResultTableComponent } from "./result-table/result-table.component";
 import { PlayGameComponent } from './play-game/play-game.component';
 
-import {PastMoves, Player, Defector, Cooperator, GrimTrigger, RandomChooser, TitForTat, TwoTitForTat, NiceTitForTat, SuspiciousTitForTat, ModelPlayer, You} from'./services/game.service';
+import {PastMoves, Player, Defector, Cooperator, GrimTrigger, RandomChooser, TitForTat, TwoTitForTat, CooperativeTitForTat, SuspiciousTitForTat, ModelPlayer, You} from'./services/game.service';
 // import { HttpClientModule } from '@angular/common/http';
 // import { Inject } from '@angular/core';
 // import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -20,6 +21,7 @@ import {PastMoves, Player, Defector, Cooperator, GrimTrigger, RandomChooser, Tit
   standalone: true,
   imports: [CommonModule,
     NamecardComponent,
+    FaqCardComponent,
     ResultTableComponent,
     MatButtonModule,
     MatInputModule,
@@ -55,10 +57,10 @@ export class AppComponent implements OnInit {
               description: "I cooperate, unless you've defected twice in a row. Exploitable?",
               detailedDescription: "Cooperates unless the opponent has defected >= 2 times in a row. Is more forgiving, but also exploitable: opponents who figure out its strategy can simply defect every other move.",
               image: "assets/images/TwoTitForTat.png"},
-             {name: "Nice Tit For Tat", 
+             {name: "Cooperative Tit For Tat", 
               description: "I cooperate unless you've defected a certain percentage of the time. Don't get too greedy!", 
               detailedDescription: "Cooperates unless the opponent has defected >20% of the time. Works well in environments where accidental defection is possible, and limits the exploitation that comes with Two Tit For Tat.",
-              image: "assets/images/NiceTitForTat.jpeg"},
+              image: "assets/images/CooperativeTitForTat.jpeg"},
              {name: "Always Cooperate", 
               description: "Hi, let's be friends!", 
               detailedDescription: "Always cooperates. Performs poorly in environments with many defectors, but works well with other cooperators or \"nice\" strategies",
@@ -89,12 +91,27 @@ export class AppComponent implements OnInit {
       "Tit For Tat": TitForTat,
       "Grim Trigger": GrimTrigger,
       "Two Tit For Tat": TwoTitForTat,
-      "Nice Tit For Tat": NiceTitForTat,
+      "Cooperative Tit For Tat": CooperativeTitForTat,
       "Always Cooperate": Cooperator,
       "Always Defect": Defector,
       "Suspicious Tit For Tat": SuspiciousTitForTat,
       // "Sim Jim": ModelPlayer - added manually
     }
+
+  faqs = [
+    {
+      question: "What is the iterated prisoner dilemma?",
+      answer: "The iterated prisoner's dilemma is a repeated version of the Prisoner's Dilemma, in which you and an opponent can choose to cooperate (leading to a fairly high score for everyone) or defect (much higher score for yourself, lower score for your opponent). Because each player is playing multiple rounds, they can adapt their strategy based on the opponent's previous actions. Both the Prisoner's Dilemma and Iterated Prisoner's Dilemma are classic problems in [game theory](https://en.wikipedia.org/wiki/Game_theory)."
+    },
+    {
+      question: "What's the best strategy?",
+      answer: "Tit For Tat is considered highly effective because it's *nice* (starts cooperating), *retaliatory* (punishes defection), and *forgiving* (returns to cooperation). It typically outperforms more complex strategies. However, the optimal strategy depends on the actions of other agents. Because you know exactly who you'll be playing against (though not in which order) you can outperform Tit for Tat by playing carefully."
+    },
+    {
+      question: "What is this game about?",
+      answer: "This game is a way for you to learn about the different strategies in the iterated prisoner's dilemma. It's inspired by [The Evolution of Trust](https://ncase.me/trust/) by Nicky Case, but provides a more competitive experience and more customizability."
+    }
+  ];
   playersList: Player[] = [];
   playersListIndex = 0; //current player you're playing a match against. No edge case b/c you're always playing against at least yourself and the model
 
@@ -108,7 +125,7 @@ export class AppComponent implements OnInit {
     "Tit For Tat": 1,
     "Grim Trigger": 1,
     "Two Tit For Tat": 1,
-    "Nice Tit For Tat": 1,
+    "Cooperative Tit For Tat": 1,
     "Always Cooperate": 1,
     "Always Defect": 1,
     "Suspicious Tit For Tat": 1,
@@ -309,7 +326,7 @@ export class AppComponent implements OnInit {
     } 
     totalNiceness += this.playerCounts["Always Cooperate"];
     totalNiceness += this.playerCounts["Two Tit For Tat"]*.9;
-    totalNiceness += this.playerCounts["Nice Tit For Tat"]*.9;
+    totalNiceness += this.playerCounts["Cooperative Tit For Tat"]*.9;
     totalNiceness += this.playerCounts["Tit For Tat"]*.8;
     totalNiceness += this.playerCounts["Grim Trigger"]*.7;
     // totalNiceness += this.playerCounts["Random Chooser"]*.5;

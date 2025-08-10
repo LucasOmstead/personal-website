@@ -25,8 +25,8 @@ def get_players():
         models.append(GrimTrigger())
     for i in range(players['Two Tit For Tat']):
         models.append(TwoTitForTat())
-    for i in range(players['Nice Tit For Tat']):
-        models.append(NiceTitForTat())
+    for i in range(players['Cooperative Tit For Tat']):
+        models.append(CooperativeTitForTat())
     for i in range(players['Always Cooperate']):
         models.append(Cooperator())
     for i in range(players['Always Defect']):

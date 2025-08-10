@@ -5,17 +5,35 @@
     <!--Page for introducing the different players-->
     <div class="home min-h-screen bg-gradient-to-b from-gray-50 to-white" *ngIf="curPage == 0">
       <div class="flex flex-col items-center w-screen justify-center py-12"> 
-        <h1 class="text-6xl font-bold mb-4 text-gray-800"> Meet Your Opponents </h1>
-        <p class="text-xl text-gray-600 mb-12 max-w-2xl text-center">Each opponent has their own unique strategy. Learn their patterns and adapt your gameplay to succeed!</p>
-        <div class="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] w-[95%] max-w-[1600px] gap-8 justify-center px-4">
-          <div *ngFor="let p of players" class="custom-component transform transition-transform duration-300 hover:scale-105">
-            <app-namecard
-              [name]="p.name"
-              [description]="p.description"
-              [imageURL]="p.image"
-              [detailedDescription]="p.detailedDescription"
-              class="shadow-lg rounded-xl overflow-hidden"
-            ></app-namecard>
+        <h1 class="text-6xl font-bold mb-4 text-gray-800"> Iterated Prisoner's Dilemma Tournament </h1>
+        <p class="text-xl text-gray-600 mb-16 max-w-2xl text-center">Each opponent has their own unique strategy. Learn their patterns and adapt your gameplay to succeed!</p>
+        
+        <!-- FAQ Section -->
+        <div class="w-full max-w-[1600px] mb-16">
+          <h2 class="text-4xl font-bold mb-8 text-gray-800 text-center">FAQ</h2>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] w-[95%] max-w-[1600px] gap-8 justify-center px-4 mx-auto">
+            <div *ngFor="let faq of faqs" class="custom-component">
+              <app-faq-card
+                [question]="faq.question"
+                [answer]="faq.answer"
+              ></app-faq-card>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opponent Information Section -->
+        <div class="w-full max-w-[1600px]">
+          <h2 class="text-4xl font-bold mb-8 text-gray-800 text-center">Opponent Information</h2>
+          <div class="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] w-[95%] max-w-[1600px] gap-8 justify-center px-4 mx-auto">
+            <div *ngFor="let p of players" class="custom-component transform transition-transform duration-300 hover:scale-105">
+              <app-namecard
+                [name]="p.name"
+                [description]="p.description"
+                [imageURL]="p.image"
+                [detailedDescription]="p.detailedDescription"
+                class="shadow-lg rounded-xl overflow-hidden"
+              ></app-namecard>
+            </div>
           </div>
         </div>
       </div>
