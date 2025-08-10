@@ -105,7 +105,7 @@ export class AppComponent implements OnInit {
     },
     {
       question: "What's the best strategy?",
-      answer: "Tit For Tat is considered highly effective because it's *nice* (starts cooperating), *retaliatory* (punishes defection), and *forgiving* (returns to cooperation). It typically outperforms more complex strategies. However, the optimal strategy depends on the actions of other agents. Because you know exactly who you'll be playing against (though not in which order) you can outperform Tit for Tat by playing carefully."
+      answer: "Tit For Tat is highly effective because it's *nice* (cooperates by default), *retaliatory* (punishes defection), and *forgiving* (returns to cooperation once the opponent does). It typically outperforms more complex strategies. However, the optimal strategy depends on the actions of other agents. Because you know exactly who you'll be playing against (though not in which order) you can outperform Tit for Tat by reading the descriptions of each opponent and playing carefully."
     },
     {
       question: "What is this game about?",
