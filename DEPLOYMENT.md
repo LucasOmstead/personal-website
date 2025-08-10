@@ -28,18 +28,24 @@ docker-compose -f docker-compose.local.yml up --build
 
 For production deployment with SSL and multi-project hosting:
 
-```powershell
-# Set your domain in environment variable
-$env:DOMAIN = "lucasomstead.com"
+```bash
+# Set your domain in environment variable (Linux/Ubuntu)
+export DOMAIN="lucasomstead.com"
 
-# Initialize nginx configuration and SSL certificates
-docker-compose --profile init up nginx-init
-docker-compose --profile cert up certbot
-docker-compose --profile prod up -d
+# Step 1: Start the HTTP-only nginx for SSL challenge (keep running in background)
+docker compose --profile init up -d nginx-init
+
+# Step 2: Get SSL certificates (nginx-init must be running)
+docker compose --profile cert up certbot
+
+# Step 3: Stop the init container and start production
+docker compose --profile init down
+docker compose --profile prod up -d
 
 # Access the applications
 # https://lucasomstead.com - Main homepage
 # https://lucasomstead.com/cooperaition - CooperAItion app
+# https://lucasomstead.com/shapeshifters - Shape Shifters project
 # API endpoints available at https://lucasomstead.com/cooperaition/api/
 ```
 
@@ -88,6 +94,38 @@ The system uses environment variables for flexible configuration:
    - Same URL structure as local development
 
 ## Troubleshooting
+
+### Docker Network Issues
+If you get "network not found" or "failed to set up container networking" errors:
+
+**Common Scenario**: You previously ran Docker Compose from root directory, now running from subdirectory
+```bash
+# First, stop containers from the OLD root directory setup
+cd /root  # or wherever you ran docker compose before
+docker compose down --remove-orphans
+
+# Clean up ALL Docker networks and containers
+docker container stop $(docker container ls -aq)
+docker container rm $(docker container ls -aq)
+docker network prune -f
+docker volume prune -f
+
+# Now go to your NEW project directory and start fresh
+cd ~/personal-website  # or wherever your git clone is
+docker compose --profile init up nginx-init
+```
+
+If you still have network conflicts:
+```bash
+# Nuclear option - clean everything
+docker system prune -af --volumes
+
+# Restart Docker daemon
+sudo systemctl restart docker
+
+# Then try again from your project directory
+docker compose --profile init up nginx-init
+```
 
 ### Local Development Issues
 - Port 80 already in use: Stop other web servers or change port mapping
