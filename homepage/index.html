@@ -5,68 +5,273 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucas Omstead - Portfolio</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
-            line-height: 1.6;
         }
+        
+        header {
+            text-align: center;
+            padding: 60px 0 40px;
+            color: white;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        main {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        
+        .about {
+            padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .about h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+        
+        .about p {
+            font-size: 1.1rem;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+        
+        .projects-section {
+            padding: 40px;
+        }
+        
+        .projects-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #2d3748;
+            text-align: center;
+        }
+        
+        .projects-grid {
+            display: grid;
+            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        }
+        
         .project {
-            border: 1px solid #ddd;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 8px;
+            background: white;
+            border: none;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .project h2 {
-            margin-top: 0;
+        
+        .project::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
+        
+        .project:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .project h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        .project p {
+            margin-bottom: 15px;
+            color: #4a5568;
+            line-height: 1.7;
+        }
+        
+        .tech-stack {
+            color: #667eea !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
         .project a {
-            color: #0066cc;
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
             text-decoration: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-top: 10px;
         }
+        
         .project a:hover {
-            text-decoration: underline;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            transform: translateX(5px);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .social-link svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .project {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Lucas Omstead</h1>
-        <p>Software Developer & Student</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Lucas Omstead</h1>
+            <p>Software Developer & Student</p>
+        </header>
 
-    <main>
-        <section>
-            <h2>About Me</h2>
-            <p>Welcome to my portfolio! I'm a software developer passionate about AI, game theory, and web development.</p>
-        </section>
+        <main>
+            <section class="about">
+                <h2>About Me</h2>
+                <p>Welcome to my portfolio! I'm a software developer passionate about AI, game theory, and web development. I enjoy creating interactive applications that combine complex algorithms with intuitive user experiences.</p>
+            </section>
 
-        <section>
-            <h2>Projects</h2>
-            
-            <div class="project">
-                <h2>CooperAItion</h2>
-                <p>A prisoner's dilemma tournament against AI models trained using simulated annealing.</p>
-                <p><strong>Tech Stack:</strong> Angular, Flask, Docker, nginx</p>
-                <p><a href="/cooperaition">View Project →</a></p>
+            <section class="projects-section">
+                <h2>Projects</h2>
+                
+                <div class="projects-grid">
+                    <div class="project">
+                        <h3>CooperAItion</h3>
+                        <p>An interactive prisoner's dilemma tournament where you compete against AI strategies trained using simulated annealing. Features multiple game theory strategies, customizable payoff matrices, and real-time gameplay analysis.</p>
+                        <p class="tech-stack"><strong>Tech Stack:</strong> Angular, Flask, Docker, nginx</p>
+                        <a href="/cooperaition">View Project →</a>
+                    </div>
+
+                    <div class="project">
+                        <h3>Shape Shifters</h3>
+                        <p>A 3D maze game where one player must run from the hunter while collecting coins. Player 1 can morph into NPCs to hide from the hunter, creating strategic gameplay in a dynamic 3D environment.</p>
+                        <p class="tech-stack"><strong>Tech Stack:</strong> Java3D, Java</p>
+                        <p class="tech-stack"><strong>Course:</strong> COMP-2800 Software Development (Group Project)</p>
+                        <a href="/shapeshifters">View Project →</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="social-links">
+                <a href="https://github.com/LucasOmstead" target="_blank" rel="noopener" class="social-link" title="GitHub">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </a>
+                <a href="www.linkedin.com/in/lucas-omstead-5bab36217" target="_blank" rel="noopener" class="social-link" title="LinkedIn">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
+                <a href="https://codeforces.com/profile/lucasomee006" target="_blank" rel="noopener" class="social-link" title="Codeforces">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4.5 7.5C5.328 7.5 6 8.172 6 9v10.5c0 .828-.672 1.5-1.5 1.5S3 20.328 3 19.5V9c0-.828.672-1.5 1.5-1.5zm7-3C12.328 4.5 13 5.172 13 6v13.5c0 .828-.672 1.5-1.5 1.5S10 20.328 10 19.5V6c0-.828.672-1.5 1.5-1.5zm7-1.5C19.328 3 20 3.672 20 4.5v15c0 .828-.672 1.5-1.5 1.5S17 20.328 17 19.5v-15c0-.828.672-1.5 1.5-1.5z"/>
+                    </svg>
+                </a>
+                <a href="https://leetcode.com/lucasomee006" target="_blank" rel="noopener" class="social-link" title="LeetCode">
+                    <svg viewBox="0 0 95 111" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M68.0063 83.0664C70.5 80.5764 74.5366 80.5829 77.0223 83.0809C79.508 85.579 79.5015 89.6226 77.0078 92.1127L65.9346 103.17C55.7187 113.371 39.06 113.519 28.6718 103.513C28.6117 103.456 23.9861 98.9201 8.72653 83.957C-1.42528 74.0029 -2.43665 58.0749 7.11648 47.8464L24.9282 28.7745C34.4095 18.6219 51.887 17.5122 62.7275 26.2789L78.9048 39.362C81.6444 41.5776 82.0723 45.5985 79.8606 48.3429C77.6488 51.0873 73.635 51.5159 70.8954 49.3003L54.7182 36.2173C49.0488 31.6325 39.1314 32.2622 34.2394 37.5006L16.4274 56.5727C11.7767 61.5522 12.2861 69.574 17.6456 74.8292C28.851 85.8169 37.4869 94.2846 37.4969 94.2942C42.8977 99.496 51.6304 99.4184 56.9331 94.1234L68.0063 83.0664Z" fill="currentColor"/>
+                    </svg>
+                </a>
             </div>
-
-            <div class="project">
-                <h2>Shape Shifters</h2>
-                <p>A 3D maze game where one player must run from the hunter while trying to collect coins. Player 1 can morph into NPCs to hide from the hunter, creating strategic gameplay in a dynamic 3D environment.</p>
-                <p><strong>Tech Stack:</strong> Java3D, Java</p>
-                <p><strong>Course:</strong> COMP-2800 Software Development (Group Project)</p>
-                <p><a href="/shapeshifters">View Project →</a></p>
-            </div>
-
-            <!-- Add more projects here -->
-            
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Lucas Omstead. All rights reserved.</p>
-    </footer>
+            <p>&copy; 2025 Lucas Omstead. All rights reserved.</p>
+        </footer>
+    </div>
 </body>
 </html>

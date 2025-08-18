@@ -135,19 +135,26 @@
     <app-result-table [players]="playersList" [payoffs]="payoffs" [matchResults]="matchResults" [scores]="playerScores"></app-result-table>
   </div>
 
-  <div class="w-screen h-[9vh] mt-[2vh] flex justify-between items-center bg-gray-50">
-      <h1 *ngIf="curPage == 0" #dummy></h1>
-      <button *ngIf="curPage == 0" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px; margin-right: 60px;">Choose players--></button>
-
-
-      <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(0)" style="width: 200px; margin-left: 60px;"><--View Players</button>
-      <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(2)" style="width: 200px; margin-right: 60px;">Begin game--></button>
-
-      <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px; margin-left: 60px;"> <-- Choose players </button>
-      <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(3)" style="width: 200px; margin-right: 60px;"> View Results --> </button>
-
-      <button *ngIf="curPage == 3" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px; margin-left: 60px;"><--Choose players</button>
-      <h1 *ngIf="curPage == 3" #dummy2></h1>
-  </div>
+  <footer class="w-screen bg-gray-50 border-t border-gray-200 mt-8">
+    <!-- Navigation buttons -->
+    <div class="flex justify-between items-center pt-2 px-4">
+      <div class="flex items-center">
+        <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(0)" style="width: 200px;"><--View Players</button>
+        <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px;"> <-- Choose players </button>
+        <button *ngIf="curPage == 3" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px;"><--Choose players</button>
+      </div>
+      
+      <div class="flex items-center">
+        <button *ngIf="curPage == 0" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px;">Choose players--></button>
+        <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(2)" style="width: 200px;">Begin game--></button>
+        <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(3)" style="width: 200px;"> View Results --> </button>
+      </div>
+    </div>
+    
+    <!-- Copyright footer -->
+    <div class="bg-gray-50 text-center py-1">
+      <p class="text-xs text-gray-500">© Lucas Omstead 2025</p>
+    </div>
+  </footer>
 
 </main>
