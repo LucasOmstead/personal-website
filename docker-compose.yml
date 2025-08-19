@@ -1,4 +1,14 @@
-services:  # Main homepage/portfolio site
+services:
+  # Get certificates first
+  certbot:
+    image: certbot/certbot
+    profiles: ["cert"]
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --email lucasomstead@gmail.com -d lucasomstead.com -d www.lucasomstead.com --agree-tos --non-interactive
+
+  # Main homepage/portfolio site
   homepage:
     build: 
       context: ./homepage-frontend
@@ -12,31 +22,6 @@ services:  # Main homepage/portfolio site
     build: 
       context: ./shapeshifters-frontend
       dockerfile: Dockerfile
-    expose:
-      - "80"
-    restart: unless-stoppedates first
-  certbot:
-    image: certbot/certbot
-    profiles: ["cert"]
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --email lucasomstead@gmail.com -d lucasomstead.com -d www.lucasomstead.com --agree-tos --non-interactive
-
-  # Main homepage/portfolio site
-  homepage-frontend:
-    image: nginx:alpine
-    volumes:
-      - ./homepage:/usr/share/nginx/html  # Your main website files
-    expose:
-      - "80"
-    restart: unless-stopped
-
-  # Shape Shifters project
-  shapeshifters:
-    image: nginx:alpine
-    volumes:
-      - ./shapeshifters:/usr/share/nginx/html  # Shape Shifters project files
     expose:
       - "80"
     restart: unless-stopped
