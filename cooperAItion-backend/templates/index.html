@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}CooperAItion Backend - Home{% endblock %}
+
+{% block content %}
+<div class="api-section">
+    <h2><span class="status-indicator"></span>Backend Status</h2>
+    <div class="endpoint">
+        <div class="endpoint-header">
+            <span class="http-method">GET</span>
+            <span class="endpoint-path">Service Status: Operational</span>
+        </div>
+        <p class="endpoint-description">
+            The CooperAItion backend is running and ready to serve AI training requests for the prisoner's dilemma tournament.
+        </p>
+    </div>
+</div>
+
+<div class="api-section">
+    <h2>About CooperAItion Backend</h2>
+    <div class="endpoint">
+        <div class="endpoint-description">
+            <p style="margin-bottom: 15px;">
+                This Flask API serves as the backend for the CooperAItion prisoner's dilemma tournament. 
+                It provides AI model training using simulated annealing algorithms to create competitive strategies.
+            </p>
+            <p style="margin-bottom: 15px;">
+                <strong>Key Features:</strong>
+            </p>
+            <ul style="margin-left: 20px; margin-bottom: 15px; line-height: 1.8;">
+                <li>Simulated annealing optimization for strategy training</li>
+                <li>Multiple prisoner's dilemma strategies (Tit-for-Tat, Random, etc.)</li>
+                <li>Customizable payoff matrices</li>
+                <li>RESTful API endpoints for frontend integration</li>
+            </ul>
+            <p>
+                This backend is part of a larger Angular frontend application that provides an interactive 
+                gaming experience for exploring game theory concepts.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="api-section">
+    <h2>Quick Start</h2>
+    <div class="endpoint">
+        <div class="endpoint-header">
+            <span class="http-method">GET</span>
+            <span class="endpoint-path">/get_model</span>
+        </div>
+        <p class="endpoint-description">
+            Get a trained AI model for the prisoner's dilemma game. This endpoint returns strategy parameters 
+            optimized through simulated annealing.
+        </p>
+    </div>
+    
+    <div class="endpoint">
+        <div class="endpoint-header">
+            <span class="http-method post">POST</span>
+            <span class="endpoint-path">/getmodel</span>
+        </div>
+        <p class="endpoint-description">
+            Alternative endpoint for retrieving AI models with custom parameters. 
+            Send a POST request with your desired configuration.
+        </p>
+    </div>
+</div>
+
+<div style="text-align: center; margin-top: 40px;">
+    <a href="/api-docs" style="display: inline-block; padding: 15px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease;">
+        View Full API Documentation →
+    </a>
+</div>
+{% endblock %}
