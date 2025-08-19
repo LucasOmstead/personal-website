@@ -1,5 +1,20 @@
-services:
-  # Get certificates first
+services:  # Main homepage/portfolio site
+  homepage:
+    build: 
+      context: ./homepage-frontend
+      dockerfile: Dockerfile
+    expose:
+      - "80"
+    restart: unless-stopped
+
+  # Shape Shifters project
+  shapeshifters:
+    build: 
+      context: ./shapeshifters-frontend
+      dockerfile: Dockerfile
+    expose:
+      - "80"
+    restart: unless-stoppedates first
   certbot:
     image: certbot/certbot
     profiles: ["cert"]
@@ -9,7 +24,7 @@ services:
     command: certonly --webroot -w /var/www/certbot --email lucasomstead@gmail.com -d lucasomstead.com -d www.lucasomstead.com --agree-tos --non-interactive
 
   # Main homepage/portfolio site
-  homepage:
+  homepage-frontend:
     image: nginx:alpine
     volumes:
       - ./homepage:/usr/share/nginx/html  # Your main website files

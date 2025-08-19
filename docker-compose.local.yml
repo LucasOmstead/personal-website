@@ -1,22 +1,22 @@
 services:
   # Main homepage/portfolio site
   homepage:
-    image: nginx:alpine
-    volumes:
-      - ./homepage:/usr/share/nginx/html  # Your main website files
+    build: 
+      context: ./homepage-frontend
+      dockerfile: Dockerfile
     expose:
       - "80"
     restart: unless-stopped
   
   shapeshifters:
-    image: nginx:alpine
-    volumes:
-      - ./shapeshifters:/usr/share/nginx/html  # Your Shapeshifters website files
+    build: 
+      context: ./shapeshifters-frontend
+      dockerfile: Dockerfile
     expose:
       - "80"
     restart: unless-stopped
 
-  # Local nginx - simple HTTP setup for CooperAItion development
+  # Local nginx - simple HTTP setup for development
   nginx:
     image: nginx:alpine
     ports:

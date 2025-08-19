@@ -1,0 +1,165 @@
+:host {
+  display: block;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  line-height: 1.6;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.back-link {
+  color: #0066cc;
+  text-decoration: none;
+  margin-bottom: 20px;
+  display: inline-block;
+  font-weight: 500;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+  
+  h1 {
+    color: #2c3e50;
+    margin: 10px 0;
+    font-size: 2.5em;
+    font-weight: 300;
+  }
+  
+  p {
+    color: #7f8c8d;
+    font-size: 1.2em;
+    margin: 0;
+  }
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+}
+
+section {
+  margin: 30px 0;
+  
+  h2 {
+    color: #2c3e50;
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    font-weight: 400;
+  }
+  
+  p {
+    margin-bottom: 15px;
+    line-height: 1.7;
+    color: #34495e;
+  }
+}
+
+.tech-stack {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border-left: 4px solid #3498db;
+  
+  h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+  
+  p {
+    margin-bottom: 8px;
+    
+    strong {
+      color: #2c3e50;
+    }
+  }
+}
+
+.features {
+  background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  border-left: 4px solid #1abc9c;
+  
+  h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+  
+  ul {
+    margin: 10px 0;
+    padding-left: 20px;
+    
+    li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      color: #34495e;
+      
+      strong {
+        color: #2c3e50;
+      }
+    }
+  }
+}
+
+footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #ecf0f1;
+  
+  p {
+    color: #7f8c8d;
+    font-size: 0.9em;
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  :host {
+    margin: 10px;
+    padding: 15px;
+  }
+  
+  header h1 {
+    font-size: 2em;
+  }
+  
+  header p {
+    font-size: 1em;
+  }
+  
+  section h2 {
+    font-size: 1.5em;
+  }
+}
