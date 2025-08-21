@@ -25,10 +25,13 @@ export class ResultTableComponent implements OnInit, OnChanges {
   @Input() players: Player[] = [];
   @Input() payoffs: number[][] = [];
   @Input() matchResults: [number[], number[]][][] = [];
+  @Input() totalRounds: number[] = [];
 
-  rankedPlayers: { index: number; score: number }[] = [];
+  rankedPlayers: { index: number; score: number; averageScore: number; gamesPlayed: number }[] = [];
   selectedPlayer: number | null = null;
   playerFinished = true;
+  userRank: number = 0;
+  userWon: boolean = false;
 
   constructor() { }
 
@@ -41,15 +44,22 @@ export class ResultTableComponent implements OnInit, OnChanges {
   }
 
   private updateRankedPlayers(): void {
-    if (this.scores.length > 0 && this.players.length > 0) {
-      // Create array of player indices and their scores
+    if (this.scores.length > 0 && this.players.length > 0 && this.totalRounds.length > 0) {
+      // Create array of player indices, their scores, and average scores per round
       this.rankedPlayers = this.scores.map((score, index) => ({
         index,
-        score
+        score,
+        averageScore: this.totalRounds[index] > 0 ? score / this.totalRounds[index] : 0,
+        gamesPlayed: this.totalRounds[index]
       }));
 
-      // Sort by score in descending order
-      this.rankedPlayers.sort((a, b) => b.score - a.score);
+      // Sort by average score in descending order
+      this.rankedPlayers.sort((a, b) => b.averageScore - a.averageScore);
+      
+      // Find user's rank (assuming user is the last player)
+      const userIndex = this.players.length - 1;
+      this.userRank = this.rankedPlayers.findIndex(p => p.index === userIndex) + 1;
+      this.userWon = this.userRank === 1;
     }
   }
 

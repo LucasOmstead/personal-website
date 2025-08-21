@@ -1,22 +1,35 @@
 <div class="container mx-auto px-4 py-8">
     <div class="bg-white rounded-lg shadow-lg overflow-hidden">
         <div class="bg-blue-600 p-4">
-            <h1 class="text-2xl font-bold text-white text-center">Tournament</h1>
+            <h1 class="text-2xl font-bold text-white text-center">Tournament Results</h1>
+        </div>
+        
+        <!-- Win/Loss Message for User -->
+        <div *ngIf="players.length > 0" class="p-4 text-center">
+            <div *ngIf="userWon" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <strong>🎉 Congratulations: You win! 🎉</strong>
+            </div>
+            <div *ngIf="!userWon" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+                <strong>Better luck next time</strong>
+            </div>
         </div>
         
         <!-- Leaderboard -->
         <div class="divide-y divide-gray-200">
             <div *ngFor="let player of rankedPlayers; let rank = index" 
-                 class="hover:bg-gray-50 transition-all duration-200">
+                 [class]="'transition-all duration-200 ' + (players[player.index].name === 'You' ? 'bg-gray-100 hover:bg-gray-150' : 'hover:bg-gray-50')">
                 
                 <!-- Player Row -->
                 <div (click)="togglePlayerDetails(rank)"
                      class="p-4 flex items-center justify-between cursor-pointer">
                     <div class="flex items-center space-x-4">
-                        <span class="text-xl font-bold text-gray-500">{{rank + 1}}</span>
-                        <span class="text-lg font-semibold">{{players[player.index].name}}</span>
+                        <span class="text-xl font-bold text-gray-500">{{rank + 1}}. </span>
+                        <span class="text-lg font-semibold"> {{players[player.index].name}}</span>
                     </div>
-                    <span class="text-lg font-bold text-blue-600">{{player.score}} points</span>
+                    <div class="text-right">
+                        <span class="text-lg font-bold text-blue-600">{{player.averageScore.toFixed(2)}} avg/round</span>
+                        <div class="text-sm text-gray-500">{{player.score}} total ({{player.gamesPlayed}} rounds)</div>
+                    </div>
                 </div>
 
                 <!-- Expandable Match History -->

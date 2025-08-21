@@ -100,16 +100,16 @@ export class AppComponent implements OnInit {
 
   faqs = [
     {
-      question: "What is the iterated prisoner dilemma?",
-      answer: "The iterated prisoner's dilemma is a repeated version of the Prisoner's Dilemma, in which you and an opponent can choose to cooperate (leading to a fairly high score for everyone) or defect (much higher score for yourself, lower score for your opponent). Because each player is playing multiple rounds, they can adapt their strategy based on the opponent's previous actions. Both the Prisoner's Dilemma and Iterated Prisoner's Dilemma are classic problems in [game theory](https://en.wikipedia.org/wiki/Game_theory)."
+      question: "What is the iterated prisoner's dilemma?",
+      answer: "The iterated prisoner's dilemma is a repeated version of the Prisoner's Dilemma, in which you and an opponent can choose to cooperate (leading to a fairly high score for everyone) or defect (much higher score for yourself, lower score for your opponent). In the *iterated* prisoner's dilemma, each player is playing multiple rounds, so they can adapt their strategy based on the opponent's previous actions. Both the prisoner's dilemma and iterated prisoner's dilemma are classic problems in [game theory](https://en.wikipedia.org/wiki/Game_theory)."
     },
     {
       question: "What's the best strategy?",
-      answer: "Tit For Tat is highly effective because it's *nice* (cooperates by default), *retaliatory* (punishes defection), and *forgiving* (returns to cooperation once the opponent does). It typically outperforms more complex strategies. However, the optimal strategy depends on the actions of other agents. Because you know exactly who you'll be playing against (though not in which order) you can outperform Tit for Tat by reading the descriptions of each opponent and playing carefully."
+      answer: "Tit For Tat is highly effective because it's *nice* (cooperates by default), *retaliatory* (punishes defection), and *forgiving* (returns to cooperation once the opponent does). It typically outperforms more complex strategies. However, the optimal strategy depends on the actions of other agents. Because you know exactly who you'll be playing against (though the order of your opponents is randomized) you can outperform Tit for Tat by playing carefully and trying to identify each opponent."
     },
     {
       question: "What is this game about?",
-      answer: "This game is a way for you to learn about the different strategies in the iterated prisoner's dilemma. It's inspired by [The Evolution of Trust](https://ncase.me/trust/) by Nicky Case, but provides a more competitive experience and more customizability."
+      answer: "This game lets you learn about different strategies in the iterated prisoner's dilemma. It's inspired by [The Evolution of Trust](https://ncase.me/trust/) by Nicky Case, but provides a more competitive experience and customizability."
     }
   ];
   playersList: Player[] = [];
@@ -136,6 +136,8 @@ export class AppComponent implements OnInit {
   
   matchResults: [number[], number[]][][] = []
   playerScores: number[] = [];
+  totalRounds: number[] = []; // Track total rounds played by each player
+  allGamesComplete: boolean = false; // Track if all games are finished
   orderMap!: { [key: number]: number };
   roundsPerPlayer!: { [key: number]: number };
   constructor(private apiService: ApiService) {
@@ -160,6 +162,9 @@ export class AppComponent implements OnInit {
         let numPlayers = this.playersList.length+2;
         this.matchResults = Array(numPlayers).fill([]).map(() => Array(numPlayers).fill([[], []]));
         this.playerScores = Array(numPlayers).fill(0);
+        this.totalRounds = Array(numPlayers).fill(0);
+        this.allGamesComplete = false; // Reset when starting new game
+        this.playersListIndex = 0; // Reset player index
       }
       
       const res = await this.apiService.getModel(this.playerCounts, this.payoffs).toPromise();
@@ -177,6 +182,22 @@ export class AppComponent implements OnInit {
 
     this.curPage = newPage;
     return;
+  };
+
+  resetAndGoToPlayerSelection = () => {
+    // Reset all game-related data
+    this.playersList = [];
+    this.matchResults = [];
+    this.playerScores = [];
+    this.totalRounds = [];
+    this.allGamesComplete = false;
+    this.playersListIndex = 0;
+    this.orderMap = {};
+    this.roundsPerPlayer = {};
+    this.model = "";
+    
+    // Go to player selection page (page 1)
+    this.curPage = 1;
   };
 
   //doesn't even have to be a function tbh, can just set curPlayer to the first in playerNames
@@ -216,9 +237,11 @@ export class AppComponent implements OnInit {
         this.matchResults[i][j] = moves;
         this.matchResults[j][i] = [moves[1], moves[0]]; // Swap the moves for the opposite perspective
         
-        // Update scores
+        // Update scores and round counts
         this.playerScores[i] += score1;
         this.playerScores[j] += score2;
+        this.totalRounds[i] += numRounds;
+        this.totalRounds[j] += numRounds;
       }
     }
   }
@@ -291,10 +314,16 @@ export class AppComponent implements OnInit {
     // Add scores to the total
     this.playerScores[this.playersList.length-1] += humanScore;
     this.playerScores[this.orderMap[this.playersListIndex]] += opponentScore;
+    
+    // Add rounds to the total
+    const roundsPlayed = humanMoves.length;
+    this.totalRounds[this.playersList.length-1] += roundsPlayed;
+    this.totalRounds[this.orderMap[this.playersListIndex]] += roundsPlayed;
 
     if (this.playersListIndex < this.playersList.length-1) {
       this.playersListIndex += 1;
     } else {
+      this.allGamesComplete = true;
       this.changePage(3);
     }
   }
@@ -304,11 +333,24 @@ export class AppComponent implements OnInit {
   }
 
   onKeyPress(event: KeyboardEvent) {
-    if (event["key"] == "ArrowLeft" && this.curPage > 0) {
-      this.changePage(this.curPage - 1); 
+    if (event["key"] == "ArrowLeft") {
+      // Handle left arrow - match the back button behavior
+      if (this.curPage == 1) {
+        this.changePage(0); // View Players
+      } else if (this.curPage == 2) {
+        this.changePage(1); // Choose players
+      } else if (this.curPage == 3) {
+        this.resetAndGoToPlayerSelection(); // Choose players (with reset)
+      }
     }
-    if (event.key == "ArrowRight" && this.curPage < (this.maxPages-1)) {
-      this.changePage(this.curPage + 1);
+    if (event.key == "ArrowRight") {
+      // Handle right arrow - match the forward button behavior
+      if (this.curPage == 0) {
+        this.changePage(1); // Choose players
+      } else if (this.curPage == 1) {
+        this.changePage(2); // Begin game
+      }
+      // No right arrow action on page 2 or 3 since there are no forward buttons
     }
   }
 

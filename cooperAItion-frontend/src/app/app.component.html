@@ -132,7 +132,7 @@
   </div>
 
   <div class="min-h-[89vh]" *ngIf="curPage == 3">
-    <app-result-table [players]="playersList" [payoffs]="payoffs" [matchResults]="matchResults" [scores]="playerScores"></app-result-table>
+    <app-result-table [players]="playersList" [payoffs]="payoffs" [matchResults]="matchResults" [scores]="playerScores" [totalRounds]="totalRounds"></app-result-table>
   </div>
 
   <footer class="w-screen bg-gray-50 border-t border-gray-200 mt-8">
@@ -141,13 +141,12 @@
       <div class="flex items-center">
         <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(0)" style="width: 200px;"><--View Players</button>
         <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px;"> <-- Choose players </button>
-        <button *ngIf="curPage == 3" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px;"><--Choose players</button>
+        <button *ngIf="curPage == 3" mat-flat-button color="primary" (click)="resetAndGoToPlayerSelection()" style="width: 200px;"><--Choose players</button>
       </div>
       
       <div class="flex items-center">
         <button *ngIf="curPage == 0" mat-flat-button color="primary" (click)="changePage(1)" style="width: 200px;">Choose players--></button>
         <button *ngIf="curPage == 1" mat-flat-button color="primary" (click)="changePage(2)" style="width: 200px;">Begin game--></button>
-        <button *ngIf="curPage == 2" mat-flat-button color="primary" (click)="changePage(3)" style="width: 200px;"> View Results --> </button>
       </div>
     </div>
     

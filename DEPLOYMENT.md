@@ -32,7 +32,16 @@ For production deployment with SSL and multi-project hosting:
 # Set your domain in environment variable (Linux/Ubuntu)
 export DOMAIN="lucasomstead.com"
 
-# Step 1: Start the HTTP-only nginx for SSL challenge (keep running in background)
+# IMPORTANT: For VPS deployments, build images with resource limits to prevent crashes
+# Step 0: Check available resources and set build limits
+free -h  # Check available memory
+df -h    # Check available disk space
+
+# If you have less than 2GB RAM, add build limits to prevent VPS crashes:
+export DOCKER_BUILDKIT=1
+export BUILDKIT_PROGRESS=plain
+
+# Step 1: Clean up and start HTTP-only nginx for SSL challenge
 docker system prune -f
 docker compose --profile init up -d nginx-init
 
@@ -41,7 +50,23 @@ docker compose --profile init up -d nginx-init
 docker compose --profile cert up certbot
 
 # Step 3: Stop the init container and start production
+# CAUTION: Building all services at once can crash low-memory VPS instances
 docker compose --profile init down
+
+# For VPS safety, build services one at a time to prevent crashes:
+echo "Building homepage (this may take 2-3 minutes)..."
+docker compose build homepage
+
+echo "Building shapeshifters (this may take 2-3 minutes)..."
+docker compose build shapeshifters
+
+echo "Building frontend (this may take 2-3 minutes)..."  
+docker compose build frontend
+
+echo "Building backend (this should be quick)..."
+docker compose build backend
+
+# Now start production services
 docker compose --profile prod up -d
 
 # Access the applications
@@ -57,6 +82,54 @@ docker compose --profile prod up -d
 - Path-based routing (`/cooperaition` for the game)
 - Automatic certificate renewal
 - Production rate limiting
+
+## VPS Resource Management
+
+### Preventing Build Crashes on Low-Memory VPS
+
+**For VPS instances with less than 2GB RAM:**
+
+```bash
+# Monitor resources during build
+watch -n 1 "free -h && df -h"
+
+# Alternative: Use pre-built images (recommended for small VPS)
+# Build images on a more powerful machine and push to Docker Hub
+# Then pull pre-built images on VPS instead of building locally
+
+# Set stricter Docker memory limits (add to docker-compose.yml)
+deploy:
+  resources:
+    limits:
+      memory: 512M
+    reservations:
+      memory: 256M
+```
+
+**Emergency Recovery if VPS Becomes Unresponsive:**
+
+```bash
+# If build process hangs or crashes the VPS:
+# 1. Restart VPS through provider control panel
+# 2. After restart, clean up partial builds:
+docker system prune -a -f --volumes
+docker builder prune -a -f
+
+# 3. Try building with memory limits:
+docker compose build --memory=512m homepage
+docker compose build --memory=512m shapeshifters
+docker compose build --memory=512m frontend
+docker compose build --memory=256m backend
+```
+
+**Warning Signs of Resource Exhaustion:**
+- Terminal becomes unresponsive during build
+- SSH connection times out
+- Build process takes longer than 5 minutes per service
+- `free -h` shows less than 100MB available memory
+
+**Alternative Approach for Small VPS:**
+Consider building images on a local machine or CI/CD system, then pulling pre-built images on the VPS.
 
 ## Environment Variables
 
