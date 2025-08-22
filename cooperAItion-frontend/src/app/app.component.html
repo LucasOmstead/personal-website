@@ -100,19 +100,19 @@
           </div>
         </div>
         <div class="flex flex-center items-center w-110 border-2 border-gray-200 rounded-lg mt-10">
-          <h1 class="text-l my=10 mx-10 my-10">You'll be playing 1 round against each player - don't choose too many! 
-            Each round will consist of a random number of moves (at least 3, but with no fixed upper bound) played against the same opponent. Why not play a fixed number of moves? Well, if you know it's the last move, there's no reason 
+          <h1 class="text-l my=10 mx-10 my-10">You'll be playing 1 round against each player, so don't choose too many! 
+            Each round will consist of a random number of moves (at least 5, but up to 10) played against the same opponent. Why not play a fixed number of moves? Well, if you know it's the last move, there's no reason 
             to cooperate. And if there's no reason to cooperate on the last move, there's no reason to cooperate on the second-last move... you get the idea. Through backwards induction, 
             we can show that <i>any</i> fixed number of moves will result in rational players defecting the entire time!
             <br><br>
-            When planning your strategy, remember to do 3 key things:
+            When planning your strategy, remember 3 key things:
             <br>
             <br>1. Be nice. Mean strategies will often trigger counterattacks, which makes <i>everyone</i> lose.
             <br>2. Be retaliatory. Don't let mean strategies take advantage of you!
             <br>3. Be forgiving. Sometimes, choosing to ignore a defection can turn out better for both players!
             <br><br>
-            Sim Jim will be training hard, trying to exploit weaknesses in his opponents & attain the highest score possible. After you finish playing, you'll have a chance to see how you did compared to Jim, 
-            and every other player! Remember to have fun but, more importantly, to maximize your score!
+            Sim Jim (see previous page) will be training hard, trying to exploit weaknesses in his opponents & attain the highest score possible. After you finish playing, you'll have a chance to see how you did compared to Jim, 
+            and every other model! Remember to have fun but, more importantly, to maximize your score!
           </h1>
         </div>
       </div>
@@ -128,11 +128,11 @@
   @Input() model!: string;
   -->
   <div class="h-[89vh]" *ngIf="curPage == 2">
-    <app-play-game [opponent]="playersList[orderMap[playersListIndex]]" [rounds]="roundsPerPlayer[orderMap[playersListIndex]]" (results)="gameFinished($event)"></app-play-game>
+    <app-play-game [opponent]="playersList[orderMap[playersListIndex]]" [rounds]="roundsMatrix[playersList.length-1][orderMap[playersListIndex]]" (results)="gameFinished($event)"></app-play-game>
   </div>
 
   <div class="min-h-[89vh]" *ngIf="curPage == 3">
-    <app-result-table [players]="playersList" [payoffs]="payoffs" [matchResults]="matchResults" [scores]="playerScores" [totalRounds]="totalRounds"></app-result-table>
+    <app-result-table [players]="playersList" [payoffs]="payoffs" [matchResults]="matchResults" [scores]="playerScores" [totalRounds]="totalRounds" [averageScores]="playerAverageScores" [averageRounds]="averageRounds"></app-result-table>
   </div>
 
   <footer class="w-screen bg-gray-50 border-t border-gray-200 mt-8">

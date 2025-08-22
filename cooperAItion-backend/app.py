@@ -34,6 +34,7 @@ def get_players():
     for i in range(players['Suspicious Tit For Tat']):
         models.append(SuspiciousTitForTat())
     
+     
     model, perf = train_simulated_annealing(numRestarts=5, temperature=100, successor=successor, models=models, payoffs=payoffs, memSize=149)
     # print(models)
     print(bin(model))

@@ -86,7 +86,7 @@ def calculateFitness(payoffs, models, modelPlayer):
 
     score = 0
     for i in range(len(models)):
-        score1, score2 = playGame(payoffs, models[i], modelPlayer, 20)
+        score1, score2 = playGame(payoffs, models[i], modelPlayer, 10)
         score += score2 
     score += playGame(payoffs, modelPlayer, modelPlayer, 10)[0]
     return score/(len(models)+1)
@@ -133,7 +133,7 @@ def train_hill_climb(numRestarts: int, numIterations: int, successor, payoffs, m
     bestModels.sort(reverse=True, key=lambda x: x[1])
     return bestModels[0]
 
-def train_hill_climb_tabu_restart(numRestarts: int, numIterations: int, successor, payoffs, memSize, tabuSize):
+def train_hill_climb_tabu_restart(numRestarts: int, numIterations: int, successor, models, payoffs, memSize, tabuSize):
     
     #we'll be storing a vector of past 3 game states, and if the other guy has defected AT ALL (even previous to those three states)
     #128 total states once you've made it to >= 3 rounds
@@ -144,7 +144,7 @@ def train_hill_climb_tabu_restart(numRestarts: int, numIterations: int, successo
     #128 + 16 + 4 + 1 = 149 total bits
     
     #this is just a training set, we can swap it out with other models
-    models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()]
+    # models = [Defector(), Cooperator(), GrimTrigger(), TitForTat(), TwoTitForTat(), CooperativeTitForTat(), SuspiciousTitForTat()]
     # models = [Cooperator(), Cooperator(), Cooperator()]
 
     bestModels = []

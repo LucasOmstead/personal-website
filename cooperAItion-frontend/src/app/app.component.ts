@@ -136,10 +136,14 @@ export class AppComponent implements OnInit {
   
   matchResults: [number[], number[]][][] = []
   playerScores: number[] = [];
+  playerAverageScores: number[] = []; // Scores from first 5 rounds only (for average calculation)
   totalRounds: number[] = []; // Track total rounds played by each player
+  averageRounds: number[] = []; // Track rounds used for average calculation (first 5 of each match)
+  roundsMatrix: number[][] = []; // Matrix storing predetermined rounds for each player pair
   allGamesComplete: boolean = false; // Track if all games are finished
   orderMap!: { [key: number]: number };
   roundsPerPlayer!: { [key: number]: number };
+  Math = Math; // Make Math available in template
   constructor(private apiService: ApiService) {
   }
 
@@ -159,18 +163,22 @@ export class AppComponent implements OnInit {
         for (let i = 0; i < this.playerCounts[playerName]; i++) {
           this.playersList.push(new this.playerMapping[playerName]());
         }
-        let numPlayers = this.playersList.length+2;
-        this.matchResults = Array(numPlayers).fill([]).map(() => Array(numPlayers).fill([[], []]));
-        this.playerScores = Array(numPlayers).fill(0);
-        this.totalRounds = Array(numPlayers).fill(0);
-        this.allGamesComplete = false; // Reset when starting new game
-        this.playersListIndex = 0; // Reset player index
       }
       
       const res = await this.apiService.getModel(this.playerCounts, this.payoffs).toPromise();
       this.model = res["model"];
       this.playersList.push(new ModelPlayer(BigInt("0b"+this.model)));
       this.playersList.push(new You());
+
+      // Initialize arrays with the correct size after all players are added
+      const numPlayers = this.playersList.length;
+      this.matchResults = Array(numPlayers).fill(null).map(() => Array(numPlayers).fill(null).map(() => [[], []]));
+      this.playerScores = Array(numPlayers).fill(0);
+      this.playerAverageScores = Array(numPlayers).fill(0);
+      this.totalRounds = Array(numPlayers).fill(0);
+      this.averageRounds = Array(numPlayers).fill(0);
+      this.allGamesComplete = false; // Reset when starting new game
+      this.playersListIndex = 0; // Reset player index
 
       this.curPage = newPage;
       const setup = this.gameSetup();
@@ -189,7 +197,10 @@ export class AppComponent implements OnInit {
     this.playersList = [];
     this.matchResults = [];
     this.playerScores = [];
+    this.playerAverageScores = [];
     this.totalRounds = [];
+    this.averageRounds = [];
+    this.roundsMatrix = [];
     this.allGamesComplete = false;
     this.playersListIndex = 0;
     this.orderMap = {};
@@ -199,6 +210,15 @@ export class AppComponent implements OnInit {
     // Go to player selection page (page 1)
     this.curPage = 1;
   };
+
+  getNumRounds(): number {
+    let rounds = 5; // Start with minimum 5 rounds
+    // Keep adding rounds with 60% probability until we hit 10 rounds
+    while (rounds < 10 && Math.random() < 0.6) {
+      rounds++;
+    }
+    return rounds;
+  }
 
   //doesn't even have to be a function tbh, can just set curPlayer to the first in playerNames
   //*ngFor component in playerNames
@@ -210,56 +230,62 @@ export class AppComponent implements OnInit {
     const modelPlayerIndex = n - 2; // Second to last player is the model
     const humanPlayerIndex = n - 1; // Last player is human
 
-    // For each pair of players (excluding human)
+    // For each pair of players (excluding human player - they'll be counted when manually played)
     for (let i = 0; i < n - 1; i++) {
       for (let j = i; j < n - 1; j++) {
-        let numRounds;
-        let result;
+        // Use predetermined rounds from the matrix
+        const numRounds = this.roundsMatrix[i][j];
+        
+        const result = this.playGameWithRounds(this.playersList[i], this.playersList[j], numRounds);
 
-        if (i === modelPlayerIndex || j === modelPlayerIndex) {
-          // If one player is the model, use the predetermined rounds from roundsPerPlayer
-
-          const nonModelIndex = i === modelPlayerIndex ? j : i;
-          numRounds = this.roundsPerPlayer[nonModelIndex];
-          result = this.playGameWithRounds(this.playersList[i], this.playersList[j], numRounds);
-        } else {
-          // Random number of rounds for non-model players
-          numRounds = 3;
-          while (numRounds < 8 && Math.random() < 0.65) {
-            numRounds++;
-          }
-          result = this.playGameWithRounds(this.playersList[i], this.playersList[j], numRounds);
-        }
-
-        const [moves, score1, score2] = result;
+        const [moves, score1, score2, avgScore1, avgScore2] = result;
         
         // Store results symmetrically
         this.matchResults[i][j] = moves;
         this.matchResults[j][i] = [moves[1], moves[0]]; // Swap the moves for the opposite perspective
         
-        // Update scores and round counts
+        // Update total scores and average scores
         this.playerScores[i] += score1;
         this.playerScores[j] += score2;
+        this.playerAverageScores[i] += avgScore1;
+        this.playerAverageScores[j] += avgScore2;
         this.totalRounds[i] += numRounds;
         this.totalRounds[j] += numRounds;
+        // For averages, only count the first 5 rounds
+        const roundsForAverage = Math.min(numRounds, 5);
+        this.averageRounds[i] += roundsForAverage;
+        this.averageRounds[j] += roundsForAverage;
       }
     }
   }
 
-  playGameWithRounds(p1: Player, p2: Player, rounds: number): [[number[], number[]], number, number] {
+  playGameWithRounds(p1: Player, p2: Player, rounds: number): [[number[], number[]], number, number, number, number] {
     let past_moves: [number[], number[]] = [[], []];
     let score1 = 0;
     let score2 = 0;
+    let avgScore1 = 0; // Score from first 5 rounds only
+    let avgScore2 = 0; // Score from first 5 rounds only
 
     for (let i = 0; i < rounds; i++) {
       let p1_action = p1.get_action(past_moves, i);
       let p2_action = p2.get_action([past_moves[1], past_moves[0]], i);
-      score1 += this.payoffs[p1_action][p2_action];
-      score2 += this.payoffs[p2_action][p1_action];
+      
+      const roundScore1 = this.payoffs[p1_action][p2_action];
+      const roundScore2 = this.payoffs[p2_action][p1_action];
+      
+      score1 += roundScore1;
+      score2 += roundScore2;
+      
+      // Only count scores from first 5 rounds for average calculation
+      if (i < 5) {
+        avgScore1 += roundScore1;
+        avgScore2 += roundScore2;
+      }
+      
       past_moves[0].push(p1_action);
       past_moves[1].push(p2_action);
     }
-    return [past_moves, score1, score2];
+    return [past_moves, score1, score2, avgScore1, avgScore2];
   }
   gameSetup(): { orderMap: { [key: number]: number }, roundsPerPlayer: { [key: number]: number } } {
     // Create array of indices excluding the You() player
@@ -281,13 +307,26 @@ export class AppComponent implements OnInit {
     const roundsPerPlayer: { [key: number]: number } = {};
     
     shuffledIndices.forEach(playerIndex => {
-      let rounds = 3; // Start with minimum 3 rounds
-      // Keep adding rounds with 65% probability until we hit 8 rounds
-      while (rounds < 8 && Math.random() < 0.65) {
-        rounds++;
-      }
-      roundsPerPlayer[playerIndex] = rounds;
+      roundsPerPlayer[playerIndex] = this.getNumRounds();
     });
+
+    // Create rounds matrix for all player pairs
+    const n = this.playersList.length;
+    this.roundsMatrix = Array(n).fill(null).map(() => Array(n).fill(0));
+    
+    for (let i = 0; i < n; i++) {
+      for (let j = i; j < n; j++) { // Only iterate upper triangle to ensure symmetry
+        if (i === j) {
+          // Self-match: use that player's predetermined rounds
+          this.roundsMatrix[i][j] = roundsPerPlayer[i];
+        } else {
+          // Cross-match: generate unique rounds for each match pair
+          const matchRounds = this.getNumRounds();
+          this.roundsMatrix[i][j] = matchRounds;
+          this.roundsMatrix[j][i] = matchRounds; // Ensure symmetry
+        }
+      }
+    }
 
     return {
       orderMap,
@@ -305,27 +344,66 @@ export class AppComponent implements OnInit {
     const opponentMoves = matchResult[1];
     let humanScore = 0;
     let opponentScore = 0;
+    let humanAvgScore = 0; // Score from first 5 rounds only
+    let opponentAvgScore = 0; // Score from first 5 rounds only
 
     for (let i = 0; i < humanMoves.length; i++) {
-      humanScore += this.payoffs[humanMoves[i]][opponentMoves[i]];
-      opponentScore += this.payoffs[opponentMoves[i]][humanMoves[i]];
+      const roundHumanScore = this.payoffs[humanMoves[i]][opponentMoves[i]];
+      const roundOpponentScore = this.payoffs[opponentMoves[i]][humanMoves[i]];
+      
+      humanScore += roundHumanScore;
+      opponentScore += roundOpponentScore;
+      
+      // Only count scores from first 5 rounds for average calculation
+      if (i < 5) {
+        humanAvgScore += roundHumanScore;
+        opponentAvgScore += roundOpponentScore;
+      }
     }
 
     // Add scores to the total
     this.playerScores[this.playersList.length-1] += humanScore;
     this.playerScores[this.orderMap[this.playersListIndex]] += opponentScore;
+    this.playerAverageScores[this.playersList.length-1] += humanAvgScore;
+    this.playerAverageScores[this.orderMap[this.playersListIndex]] += opponentAvgScore;
     
     // Add rounds to the total
     const roundsPlayed = humanMoves.length;
     this.totalRounds[this.playersList.length-1] += roundsPlayed;
     this.totalRounds[this.orderMap[this.playersListIndex]] += roundsPlayed;
+    // For averages, only count the first 5 rounds
+    const roundsForAverage = Math.min(roundsPlayed, 5);
+    this.averageRounds[this.playersList.length-1] += roundsForAverage;
+    this.averageRounds[this.orderMap[this.playersListIndex]] += roundsForAverage;
 
     if (this.playersListIndex < this.playersList.length-1) {
       this.playersListIndex += 1;
     } else {
+      // All manual games complete, now add human self-match to match AI players
+      this.addHumanSelfMatch();
       this.allGamesComplete = true;
       this.changePage(3);
     }
+  }
+
+  addHumanSelfMatch() {
+    // Add a self-match for the human player to match what AI players get
+    const humanPlayerIndex = this.playersList.length - 1;
+    const humanRounds = this.roundsMatrix[humanPlayerIndex][humanPlayerIndex];
+    
+    // Play human vs human (self-match)
+    const result = this.playGameWithRounds(this.playersList[humanPlayerIndex], this.playersList[humanPlayerIndex], humanRounds);
+    const [moves, score1, score2, avgScore1, avgScore2] = result;
+    
+    // Store the self-match result
+    this.matchResults[humanPlayerIndex][humanPlayerIndex] = moves;
+    
+    // Update scores for self-match (both scores go to the human player)
+    this.playerScores[humanPlayerIndex] += score1;
+    this.playerAverageScores[humanPlayerIndex] += avgScore1;
+    this.totalRounds[humanPlayerIndex] += humanRounds;
+    const roundsForAverage = Math.min(humanRounds, 5);
+    this.averageRounds[humanPlayerIndex] += roundsForAverage;
   }
 
   ngOnInit() {

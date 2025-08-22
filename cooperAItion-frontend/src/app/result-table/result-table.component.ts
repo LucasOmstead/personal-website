@@ -26,6 +26,8 @@ export class ResultTableComponent implements OnInit, OnChanges {
   @Input() payoffs: number[][] = [];
   @Input() matchResults: [number[], number[]][][] = [];
   @Input() totalRounds: number[] = [];
+  @Input() averageScores: number[] = []; // Scores from first 5 rounds only
+  @Input() averageRounds: number[] = []; // Rounds used for average calculation
 
   rankedPlayers: { index: number; score: number; averageScore: number; gamesPlayed: number }[] = [];
   selectedPlayer: number | null = null;
@@ -44,12 +46,12 @@ export class ResultTableComponent implements OnInit, OnChanges {
   }
 
   private updateRankedPlayers(): void {
-    if (this.scores.length > 0 && this.players.length > 0 && this.totalRounds.length > 0) {
-      // Create array of player indices, their scores, and average scores per round
+    if (this.scores.length > 0 && this.players.length > 0 && this.averageScores.length > 0 && this.averageRounds.length > 0) {
+      // Create array of player indices, their scores, and average scores per round (from first 5 rounds only)
       this.rankedPlayers = this.scores.map((score, index) => ({
         index,
         score,
-        averageScore: this.totalRounds[index] > 0 ? score / this.totalRounds[index] : 0,
+        averageScore: this.averageRounds[index] > 0 ? this.averageScores[index] / this.averageRounds[index] : 0,
         gamesPlayed: this.totalRounds[index]
       }));
 
