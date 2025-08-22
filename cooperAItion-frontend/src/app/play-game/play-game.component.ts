@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {PastMoves, Player, Defector, Cooperator, GrimTrigger, RandomChooser, TitForTat, TwoTitForTat, CooperativeTitForTat, SuspiciousTitForTat, ModelPlayer, You} from'../services/game.service';
 import { FormsModule } from '@angular/forms';
@@ -12,13 +12,43 @@ import {MatInputModule} from '@angular/material/input';
   templateUrl: './play-game.component.html',
   styleUrl: './play-game.component.scss'
 })
-export class PlayGameComponent {
+export class PlayGameComponent implements OnInit, OnDestroy {
   //Playing 1 match against a single player
   @Input() opponent!: Player;
   @Input() rounds!: number; 
   @Output() results = new EventEmitter<[number[], number[]]>();
   
   curMatch: [number[], number[]] = [[], []];
+
+  ngOnInit(): void {
+    // Add keyboard event listener
+    document.addEventListener('keydown', this.onKeyDown.bind(this));
+  }
+
+  ngOnDestroy(): void {
+    // Remove keyboard event listener to prevent memory leaks
+    document.removeEventListener('keydown', this.onKeyDown.bind(this));
+  }
+
+  // Handle keyboard shortcuts
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    // Prevent if user is typing in an input field
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      return;
+    }
+
+    switch (event.key.toLowerCase()) {
+      case 'c':
+        event.preventDefault();
+        this.handleAction(0); // Cooperate
+        break;
+      case 'd':
+        event.preventDefault();
+        this.handleAction(1); // Defect
+        break;
+    }
+  }
 
   handleAction(action: number) {
     // console.log(this.opponent);

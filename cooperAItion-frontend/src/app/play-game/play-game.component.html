@@ -1,21 +1,108 @@
-<div class="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
-    <!--Lists past rounds-->
-    <div #pastMatchContainer class="flex flex-col items-center justify-left w-250 h-40">
-        <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
-            <h1 class="w-80 text-2xl">Your moves: </h1>
-            <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
-                <div *ngFor="let move of curMatch[0]" class="rounded-full w-15 h-15" [ngClass]="move == 1 ? 'bg-red-300' : 'bg-blue-300'"></div>
-            </div>
-        </div>
-        <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
-            <h1 class="w-80 text-2xl">Opponent's moves: </h1>
-            <div class="w-[100%] h-[100%] flex flex-row justify-left items-center">
-                <div *ngFor="let move of curMatch[1]" class="rounded-full w-15 h-15" [ngClass]="move == 1 ? 'bg-red-300' : 'bg-blue-300'"></div>
-            </div>
-        </div>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8 px-4">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">Prisoner's Dilemma</h1>
+      <p class="text-gray-600 mt-2">Round {{curMatch[0].length + 1}}</p>
     </div>
-    <div class="mt-20 w-[50%] h-50 flex justify-between">
-        <button mat-flat-button color="primary" class="text-l" (click)="handleAction(0)" style="width: 200px; margin-left: 60px;"> Cooperate </button>
-        <button mat-flat-button color="primary" class="text-l" (click)="handleAction(1)" style="width: 200px; margin-left: 60px;"> Defect </button>
+
+    <!-- Game History Section -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Match History</h3>
+      
+      <!-- Your moves -->
+      <div class="mb-6">
+        <div class="flex items-center mb-2">
+          <span class="text-lg font-medium text-gray-700 w-32">Your moves:</span>
+          <div class="flex flex-wrap gap-2 min-h-[2.5rem] items-center">
+            <div *ngFor="let move of curMatch[0]; let i = index" 
+                 class="relative group">
+              <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center transition-all duration-200 hover:scale-110"
+                   [ngClass]="move === 1 ? 'bg-red-400 border-red-500' : 'bg-blue-400 border-blue-500'">
+                <span class="text-white font-bold text-sm">{{move === 1 ? 'D' : 'C'}}</span>
+              </div>
+              <!-- Tooltip -->
+              <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Round {{i + 1}}: {{move === 1 ? 'Defect' : 'Cooperate'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Opponent moves -->
+      <div class="mb-6">
+        <div class="flex items-center mb-2">
+          <span class="text-lg font-medium text-gray-700 w-32">Opponent:</span>
+          <div class="flex flex-wrap gap-2 min-h-[2.5rem] items-center">
+            <div *ngFor="let move of curMatch[1]; let i = index" 
+                 class="relative group">
+              <div class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center transition-all duration-200 hover:scale-110"
+                   [ngClass]="move === 1 ? 'bg-red-400 border-red-500' : 'bg-blue-400 border-blue-500'">
+                <span class="text-white font-bold text-sm">{{move === 1 ? 'D' : 'C'}}</span>
+              </div>
+              <!-- Tooltip -->
+              <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Round {{i + 1}}: {{move === 1 ? 'Defect' : 'Cooperate'}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex justify-center mt-4 text-sm text-gray-600">
+        <div class="flex items-center mr-6">
+          <div class="w-4 h-4 bg-blue-400 rounded-full mr-2"></div>
+          <span>Cooperate (C)</span>
+        </div>
+        <div class="flex items-center">
+          <div class="w-4 h-4 bg-red-400 rounded-full mr-2"></div>
+          <span>Defect (D)</span>
+        </div>
+      </div>
     </div>
+
+    <!-- Action Buttons Section -->
+    <div class="bg-white rounded-xl shadow-lg p-8">
+      <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">Choose Your Action</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        <!-- Cooperate Button -->
+        <button 
+          (click)="handleAction(0)"
+          class="group relative p-6 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300">
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-3 group-hover:bg-opacity-30 transition-all duration-200">
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <span class="text-xl font-bold">Cooperate</span>
+            <span class="text-sm opacity-90 mt-1">Work together</span>
+          </div>
+        </button>
+
+        <!-- Defect Button -->
+        <button 
+          (click)="handleAction(1)"
+          class="group relative p-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300">
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-3 group-hover:bg-opacity-30 transition-all duration-200">
+              <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <span class="text-xl font-bold">Defect</span>
+            <span class="text-sm opacity-90 mt-1">Look out for yourself</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Keyboard shortcuts hint -->
+    <div class="text-center mt-6 text-sm text-gray-500">
+      <p>💡 Tip: Use keyboard shortcuts - <kbd class="bg-gray-200 px-2 py-1 rounded">C</kbd> to Cooperate, <kbd class="bg-gray-200 px-2 py-1 rounded">D</kbd> to Defect</p>
+    </div>
+  </div>
 </div>
