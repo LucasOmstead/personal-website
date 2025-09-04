@@ -19,18 +19,17 @@ export class PlayGameComponent implements OnInit, OnDestroy {
   @Output() results = new EventEmitter<[number[], number[]]>();
   
   curMatch: [number[], number[]] = [[], []];
+  private keysPressed: Set<string> = new Set(); // Track which keys are currently pressed
 
   ngOnInit(): void {
-    // Add keyboard event listener
-    document.addEventListener('keydown', this.onKeyDown.bind(this));
+    // Event listeners are handled by @HostListener decorators
   }
 
   ngOnDestroy(): void {
-    // Remove keyboard event listener to prevent memory leaks
-    document.removeEventListener('keydown', this.onKeyDown.bind(this));
+    // Event listeners are automatically cleaned up by @HostListener
   }
 
-  // Handle keyboard shortcuts
+  // Handle keyboard shortcuts - only on initial keypress, not when held
   @HostListener('document:keydown', ['$event'])
   onKeyDown(event: KeyboardEvent): void {
     // Prevent if user is typing in an input field
@@ -38,20 +37,64 @@ export class PlayGameComponent implements OnInit, OnDestroy {
       return;
     }
 
-    switch (event.key.toLowerCase()) {
+    const key = event.key.toLowerCase();
+    
+    // Only trigger if this key isn't already pressed (first press)
+    if (this.keysPressed.has(key)) {
+      return; // Key is already pressed, ignore
+    }
+
+    // Mark key as pressed
+    this.keysPressed.add(key);
+
+    let action: number | null = null;
+    switch (key) {
       case 'c':
         event.preventDefault();
-        this.handleAction(0); // Cooperate
+        action = 0; // Cooperate
         break;
       case 'd':
         event.preventDefault();
-        this.handleAction(1); // Defect
+        action = 1; // Defect
         break;
+    }
+
+    if (action !== null) {
+      // Directly execute game logic for keyboard - no debounce needed
+      if (this.opponent instanceof You) {
+        let userAction = action;
+        let opponentAction = action;
+        this.curMatch[0].push(userAction);
+        this.curMatch[1].push(opponentAction);
+
+        if (this.curMatch[0].length >= this.rounds) {
+          this.results.emit(this.curMatch);
+          this.curMatch = [[], []];
+        }
+      } else {
+        let userAction = action;
+        let opponentAction = this.opponent.get_action([this.curMatch[1], this.curMatch[0]], this.curMatch[0].length);
+
+        this.curMatch[0].push(userAction);
+        this.curMatch[1].push(opponentAction);
+
+        if (this.curMatch[0].length >= this.rounds) {
+          this.results.emit(this.curMatch);
+          this.curMatch = [[], []];
+        }
+      }
     }
   }
 
+  @HostListener('document:keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent): void {
+    const key = event.key.toLowerCase();
+    // Remove key from pressed set when released
+    this.keysPressed.delete(key);
+  }
+
   handleAction(action: number) {
-    // console.log(this.opponent);
+    // Execute game logic for button clicks - no debounce needed with new key tracking
     if (this.opponent instanceof You) {
       let userAction = action;
       let opponentAction = action;
@@ -74,7 +117,6 @@ export class PlayGameComponent implements OnInit, OnDestroy {
         this.curMatch = [[], []];
       }
     }
-    // console.log(this.curMatch);
   }
 
   //so randomly end it when the user clicks the button and the length is > 4 or whatever
