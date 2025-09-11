@@ -1,45 +1,51 @@
-:host {
-  display: block;
+.container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
-  line-height: 1.6;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  margin-top: 20px;
-  margin-bottom: 20px;
 }
 
 .back-link {
-  color: #0066cc;
+  color: white;
   text-decoration: none;
   margin-bottom: 20px;
   display: inline-block;
   font-weight: 500;
+  opacity: 0.9;
+  transition: all 0.3s ease;
   
   &:hover {
+    opacity: 1;
     text-decoration: underline;
   }
 }
 
 header {
   text-align: center;
-  margin-bottom: 30px;
+  padding: 60px 0 40px;
+  color: white;
   
   h1 {
-    color: #2c3e50;
-    margin: 10px 0;
-    font-size: 2.5em;
-    font-weight: 300;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   }
   
   p {
-    color: #7f8c8d;
-    font-size: 1.2em;
+    font-size: 1.3rem;
+    font-weight: 300;
+    opacity: 0.9;
     margin: 0;
   }
+}
+
+main {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin-bottom: 40px;
+  padding: 40px;
 }
 
 .video-container {
@@ -66,67 +72,111 @@ section {
   margin: 30px 0;
   
   h2 {
-    color: #2c3e50;
-    font-size: 1.8em;
-    margin-bottom: 15px;
-    font-weight: 400;
+    color: #2d3748;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 600;
   }
   
   p {
     margin-bottom: 15px;
-    line-height: 1.7;
-    color: #34495e;
+    line-height: 1.8;
+    color: #4a5568;
+    font-size: 1.1rem;
   }
 }
 
 .tech-stack {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px 0;
-  border-left: 4px solid #3498db;
+  padding: 30px;
+  border-radius: 15px;
+  margin: 30px 0;
+  border: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #667eea;
+  }
   
   h3 {
     margin-top: 0;
-    color: #2c3e50;
-    font-size: 1.3em;
-    margin-bottom: 15px;
+    color: #2d3748;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: 600;
   }
   
   p {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    color: #4a5568;
     
     strong {
-      color: #2c3e50;
+      color: #667eea;
+      font-weight: 600;
     }
   }
 }
 
 .features {
-  background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%);
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px 0;
-  border-left: 4px solid #1abc9c;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  margin: 30px 0;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #667eea;
+  }
   
   h3 {
     margin-top: 0;
-    color: #2c3e50;
-    font-size: 1.3em;
-    margin-bottom: 15px;
+    color: #2d3748;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: 600;
   }
   
   ul {
     margin: 10px 0;
-    padding-left: 20px;
+    padding-left: 0;
+    list-style: none;
     
     li {
-      margin-bottom: 10px;
-      line-height: 1.6;
-      color: #34495e;
+      margin-bottom: 15px;
+      line-height: 1.7;
+      color: #4a5568;
+      padding-left: 25px;
+      position: relative;
+      
+      &::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #667eea;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
       
       strong {
-        color: #2c3e50;
+        color: #2d3748;
+        font-weight: 600;
       }
     }
   }
@@ -134,32 +184,39 @@ section {
 
 footer {
   text-align: center;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #ecf0f1;
+  padding: 30px 0;
+  color: white;
+  opacity: 0.8;
   
   p {
-    color: #7f8c8d;
-    font-size: 0.9em;
+    color: white;
+    font-size: 0.9rem;
     margin: 0;
   }
 }
 
 @media (max-width: 768px) {
-  :host {
-    margin: 10px;
-    padding: 15px;
+  .container {
+    padding: 10px;
   }
   
   header h1 {
-    font-size: 2em;
+    font-size: 2rem;
   }
   
   header p {
-    font-size: 1em;
+    font-size: 1rem;
+  }
+  
+  main {
+    padding: 20px;
   }
   
   section h2 {
-    font-size: 1.5em;
+    font-size: 1.5rem;
+  }
+
+  .tech-stack, .features {
+    padding: 20px;
   }
 }

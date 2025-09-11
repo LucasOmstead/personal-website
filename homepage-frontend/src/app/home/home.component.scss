@@ -74,6 +74,8 @@ main {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   &::before {
     content: '';
@@ -82,7 +84,7 @@ main {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: #667eea;
   }
 
   &:hover {
@@ -107,6 +109,15 @@ main {
     color: #667eea !important;
     font-weight: 600;
     font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+
+  .project-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 20px;
   }
 
   a {
@@ -119,13 +130,30 @@ main {
     border: 2px solid #667eea;
     border-radius: 8px;
     transition: all 0.3s ease;
-    margin-top: 10px;
 
     &:hover {
       background: #667eea;
       color: white;
       text-decoration: none;
       transform: translateX(5px);
+    }
+  }
+
+  .github-link {
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 8px;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
   }
 }
