@@ -1,4 +1,2 @@
-Personal website, deployed at lucasomstead.com
+My personal website, deployed at lucasomstead.com
 
-Projects included:
-- CooperAItion
